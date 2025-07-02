@@ -12,14 +12,14 @@ from decouple import config
 # See https://docs.djangoproject.com/en/4.2/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = config('SECRET_KEY', default='django-insecure-change-this-key')
+SECRET_KEY = os.environ.get('SECRET_KEY', 'django-insecure-change-this-key')
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = config('DEBUG', default=True, cast=bool)
+DEBUG = os.environ.get('DEBUG', "False")== "True"
 
 # ALLOWED_HOSTS Configuration
 # Handle both local development and production
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS =os.environ.get('ALLOWED_HOSTS', 'localhost,127.0.0.1,paystack-integration-ldwp.onrender.com').split(" ")
 if DEBUG:
     # Local development
     ALLOWED_HOSTS = ['localhost', '127.0.0.1']
@@ -87,10 +87,13 @@ WSGI_APPLICATION = 'paystack_project.wsgi.application'
 # https://docs.djangoproject.com/en/4.2/ref/settings/#databases
 
 # Database Configuration
-if config('DATABASE_URL', default=None):
+database_url = os.environ.get('DATABASE_URL', None)
+
+if database_url:
     # Use PostgreSQL if DATABASE_URL is provided (production)
     DATABASES = {
-        'default': dj_database_url.parse(config('DATABASE_URL'))
+        
+        'default': dj_database_url.parse(database_url)
     }
 else:
     # Use SQLite for local development
