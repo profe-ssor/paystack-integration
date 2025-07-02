@@ -3,6 +3,10 @@ from django.urls import path
 from . import views
 
 urlpatterns = [
+    # Index endpoint
+    path('', views.index, name='index'),
+    path('index/', views.index, name='index_alt'),
+    
     # Payment endpoints
     path('initialize/', views.InitializePaymentView.as_view(), name='initialize_payment'),
     path('verify/<str:reference>/', views.VerifyPaymentView.as_view(), name='verify_payment'),

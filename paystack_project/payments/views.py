@@ -8,6 +8,7 @@ from django.utils import timezone
 from django.views.decorators.csrf import csrf_exempt
 from django.utils.decorators import method_decorator
 from django.http import HttpResponse
+from django.core.exceptions import ObjectDoesNotExist
 from rest_framework import generics, status
 from rest_framework.response import Response
 from rest_framework.decorators import api_view, permission_classes
@@ -21,6 +22,19 @@ from .serializers import (
 from .services import paystack_service
 
 logger = logging.getLogger('payments')
+
+@api_view(['GET'])
+@permission_classes([AllowAny])
+def index(request):
+    """Index endpoint with setup success message"""
+    return Response({
+        'status': 'success',
+        'message': 'Setup successful',
+        'data': {
+            'api_version': '1.0',
+            'service': 'Paystack Payment API'
+        }
+    })
 
 class InitializePaymentView(generics.CreateAPIView):
     """Initialize payment with Paystack"""
