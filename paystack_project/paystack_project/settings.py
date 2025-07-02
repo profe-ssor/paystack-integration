@@ -1,4 +1,3 @@
-
 from pathlib import Path
 import os
 from decouple import config
@@ -18,7 +17,19 @@ SECRET_KEY = config('SECRET_KEY', default='django-insecure-change-this-key')
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = config('DEBUG', default=True, cast=bool)
 
-ALLOWED_HOSTS = os.environ.get('ALLOWED_HOSTS', 'localhost,127.0.0.1').split(',')
+# ALLOWED_HOSTS Configuration
+# Handle both local development and production
+ALLOWED_HOSTS = []
+if DEBUG:
+    # Local development
+    ALLOWED_HOSTS = ['localhost', '127.0.0.1']
+else:
+    # Production - get from environment variable
+    allowed_hosts_env = os.environ.get('ALLOWED_HOSTS', 'paystack-integration-ldwp.onrender.com')
+    ALLOWED_HOSTS = [host.strip() for host in allowed_hosts_env.split(',')]
+
+# Alternative: Simple approach that works for both
+# ALLOWED_HOSTS = os.environ.get('ALLOWED_HOSTS', 'localhost,127.0.0.1,paystack-integration-ldwp.onrender.com').split(',')
 
 
 # Application definition
@@ -146,18 +157,23 @@ REST_FRAMEWORK = {
 }
 
 # CORS Settings
-CORS_ALLOWED_ORIGINS = [
-    "http://localhost:3000",
-    "http://127.0.0.1:3000",
-    "http://localhost:8080",
-    "http://localhost:5173",
-    "http://127.0.0.1:5173",
-]
+if DEBUG:
+    # Development CORS settings
+    CORS_ALLOWED_ORIGINS = [
+        "http://localhost:3000",
+        "http://127.0.0.1:3000",
+        "http://localhost:8080",
+        "http://localhost:5173",
+        "http://127.0.0.1:5173",
+    ]
+    CORS_ALLOW_ALL_ORIGINS = True
+else:
+    # Production CORS settings
+    CORS_ALLOW_ALL_ORIGINS = False
+    cors_origins_env = os.environ.get('CORS_ALLOWED_ORIGINS', 'https://your-frontend.onrender.com')
+    CORS_ALLOWED_ORIGINS = [origin.strip() for origin in cors_origins_env.split(',')]
 
 CORS_ALLOW_CREDENTIALS = True
-
-# For development, allow all origins (uncomment for production security)
-CORS_ALLOW_ALL_ORIGINS = True
 
 # Paystack Settings
 PAYSTACK_SECRET_KEY = config('PAYSTACK_SECRET_KEY')
@@ -196,13 +212,6 @@ import sys
 IS_PRODUCTION = not DEBUG
 
 if IS_PRODUCTION:
-    # Only allow your deployed domains
-    ALLOWED_HOSTS = os.environ.get('ALLOWED_HOSTS', 'your-app.onrender.com').split(',')
-
-    # CORS: Only allow your frontend's deployed URLs
-    CORS_ALLOW_ALL_ORIGINS = False
-    CORS_ALLOWED_ORIGINS = os.environ.get('CORS_ALLOWED_ORIGINS', 'https://your-frontend.onrender.com').split(',')
-
     # Enforce HTTPS
     SECURE_SSL_REDIRECT = True
     SESSION_COOKIE_SECURE = True
@@ -210,9 +219,6 @@ if IS_PRODUCTION:
     SECURE_HSTS_SECONDS = 31536000
     SECURE_HSTS_INCLUDE_SUBDOMAINS = True
     SECURE_HSTS_PRELOAD = True
-
-    # Optionally, change admin URL for security
-    # ADMIN_URL = os.environ.get('ADMIN_URL', 'secure-admin/')
 
     # Disable browsable API in production
     REST_FRAMEWORK['DEFAULT_RENDERER_CLASSES'] = [
