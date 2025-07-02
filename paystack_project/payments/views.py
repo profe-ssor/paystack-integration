@@ -310,17 +310,10 @@ class TransactionListView(generics.ListAPIView):
         
         if page is not None:
             serializer = self.get_serializer(page, many=True)
-            return self.get_paginated_response({
-                'status': 'success',
-                'data': serializer.data
-            })
+            return self.get_paginated_response(serializer.data)
         
         serializer = self.get_serializer(queryset, many=True)
-        return Response({
-            'status': 'success',
-            'data': serializer.data,
-            'count': queryset.count()
-        })
+        return Response(serializer.data)
 
 class TransactionDetailView(generics.RetrieveAPIView):
     """Get transaction details"""

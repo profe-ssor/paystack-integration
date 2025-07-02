@@ -1,3 +1,20 @@
 Initializing payment for reference: PAY_A405977E5B8E
 Paystack API request failed: 403 Client Error: Forbidden for url: https://api.paystack.co/transaction/initialize
 Payment initialization error: Payment service error: 403 Client Error: Forbidden for url: https://api.paystack.co/transaction/initialize
+Initializing payment for reference: PAY_EF65A8C9B3E6
+Initializing payment for reference: PAY_EA783675B1A5
+Initializing payment for reference: PAY_8526C5A1D02C
+Initializing payment for reference: PAY_0FA67335ED9F
+Initializing payment for reference: PAY_D5193C20EF3B
+Initializing payment for reference: PAY_83EC44AF2E1F
+Initializing payment for reference: PAY_568B9515D394
+Initializing payment for reference: PAY_C2E5ECA15D44
+Initializing payment for reference: PAY_F99C644E2E72
+Initializing payment for reference: PAY_49B72709543D
+Initializing payment for reference: PAY_5FFDAB341BB7
+Paystack API request failed: 403 Client Error: Forbidden for url: https://api.paystack.co/transaction/initialize
+Payment initialization error: Payment service error: 403 Client Error: Forbidden for url: https://api.paystack.co/transaction/initialize
+Initializing payment for reference: PAY_001139AAE6F3
+Paystack API request failed: 403 Client Error: Forbidden for url: https://api.paystack.co/transaction/initialize
+Payment initialization error: Payment service error: 403 Client Error: Forbidden for url: https://api.paystack.co/transaction/initialize
+Initializing payment for reference: PAY_BC425F9F95D7
