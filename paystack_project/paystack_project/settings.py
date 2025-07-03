@@ -18,19 +18,11 @@ SECRET_KEY = os.environ.get('SECRET_KEY', 'django-insecure-change-this-key')
 DEBUG = os.environ.get('DEBUG', "False")== "True"
 
 # ALLOWED_HOSTS Configuration
-# Handle both local development and production
-ALLOWED_HOSTS=os.environ.get('ALLOWED_HOSTS', 'localhost 127.0.0.1 paystack-integration-ldwp.onrender.com').split(" ")
-if DEBUG:
-    # Local development
-    ALLOWED_HOSTS = ['localhost', '127.0.0.1']
-else:
-    # Production - get from environment variable
-    allowed_hosts_env = os.environ.get('ALLOWED_HOSTS', 'paystack-integration-ldwp.onrender.com')
-    ALLOWED_HOSTS = [host.strip() for host in allowed_hosts_env.split(',')]
+
 
 # Alternative: Simple approach that works for both
-# ALLOWED_HOSTS = os.environ.get('ALLOWED_HOSTS', 'localhost,127.0.0.1,paystack-integration-ldwp.onrender.com').split(',')
-
+allowed_hosts_env = os.environ.get('ALLOWED_HOSTS', 'localhost,127.0.0.1,paystack-integration-ldwp.onrender.com')
+ALLOWED_HOSTS = [host.strip() for host in allowed_hosts_env.split(',') if host.strip()]
 
 # Application definition
 
@@ -142,6 +134,8 @@ USE_TZ = True
 STATIC_URL = 'static/'
 STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
 
+STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
+
 # Default primary key field type
 # https://docs.djangoproject.com/en/4.2/ref/settings/#default-auto-field
 
@@ -174,7 +168,7 @@ else:
     # Production CORS settings
     CORS_ALLOW_ALL_ORIGINS = False
     cors_origins_env = os.environ.get('CORS_ALLOWED_ORIGINS', 'https://your-frontend.onrender.com')
-    CORS_ALLOWED_ORIGINS = [origin.strip() for origin in cors_origins_env.split(',')]
+    CORS_ALLOWED_ORIGINS = [origin.strip() for origin in cors_origins_env.split(',') if origin.strip()]
 
 CORS_ALLOW_CREDENTIALS = True
 
