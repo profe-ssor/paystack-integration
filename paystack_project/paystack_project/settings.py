@@ -46,6 +46,7 @@ INSTALLED_APPS = [
 MIDDLEWARE = [
     'corsheaders.middleware.CorsMiddleware',
     'django.middleware.security.SecurityMiddleware',
+     'whitenoise.middleware.WhiteNoiseMiddleware',  # Added for static files serving
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
@@ -167,7 +168,7 @@ if DEBUG:
 else:
     # Production CORS settings
     CORS_ALLOW_ALL_ORIGINS = False
-    cors_origins_env = os.environ.get('CORS_ALLOWED_ORIGINS', 'https://your-frontend.onrender.com')
+    cors_origins_env = os.environ.get('CORS_ALLOWED_ORIGINS', 'https://pay-stack-dun.vercel.app/')
     CORS_ALLOWED_ORIGINS = [origin.strip() for origin in cors_origins_env.split(',') if origin.strip()]
 
 CORS_ALLOW_CREDENTIALS = True
