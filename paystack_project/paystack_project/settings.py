@@ -1,31 +1,18 @@
 from pathlib import Path
 import os
 from decouple import config
-# Build paths inside the project like this: BASE_DIR / 'subdir'.
+import dj_database_url
+
 BASE_DIR = Path(__file__).resolve().parent.parent
 
-import dj_database_url
-from decouple import config
-
-
-# Quick-start development settings - unsuitable for production
-# See https://docs.djangoproject.com/en/4.2/howto/deployment/checklist/
-
-# SECURITY WARNING: keep the secret key used in production secret!
+# --- SECURITY SETTINGS ---
 SECRET_KEY = os.environ.get('SECRET_KEY', 'django-insecure-change-this-key')
+DEBUG = os.environ.get('DEBUG', "False") == "True"
 
-# SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = os.environ.get('DEBUG', "False")== "True"
-
-# ALLOWED_HOSTS Configuration
-
-
-# Alternative: Simple approach that works for both
 allowed_hosts_env = os.environ.get('ALLOWED_HOSTS', 'localhost,127.0.0.1,paystack-integration-ldwp.onrender.com')
 ALLOWED_HOSTS = [host.strip() for host in allowed_hosts_env.split(',') if host.strip()]
 
-# Application definition
-
+# --- APPLICATIONS ---
 INSTALLED_APPS = [
     'django.contrib.admin',
     'django.contrib.auth',
@@ -33,20 +20,20 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    
-     # Third party apps
+
+    # Third-party
     'rest_framework',
     'corsheaders',
     'django_filters',
-    
-    # Local apps
+
+    # Local
     'payments',
 ]
 
 MIDDLEWARE = [
     'corsheaders.middleware.CorsMiddleware',
     'django.middleware.security.SecurityMiddleware',
-     'whitenoise.middleware.WhiteNoiseMiddleware',  # Added for static files serving
+    'whitenoise.middleware.WhiteNoiseMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
@@ -75,21 +62,14 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'paystack_project.wsgi.application'
 
-
-# Database
-# https://docs.djangoproject.com/en/4.2/ref/settings/#databases
-
-# Database Configuration
+# --- DATABASE CONFIGURATION ---
 database_url = os.environ.get('DATABASE_URL', None)
 
 if database_url:
-    # Use PostgreSQL if DATABASE_URL is provided (production)
     DATABASES = {
-        
         'default': dj_database_url.parse(database_url)
     }
 else:
-    # Use SQLite for local development
     DATABASES = {
         'default': {
             'ENGINE': 'django.db.backends.sqlite3',
@@ -97,52 +77,29 @@ else:
         }
     }
 
-# Password validation
-# https://docs.djangoproject.com/en/4.2/ref/settings/#auth-password-validators
-
+# --- PASSWORD VALIDATORS ---
 AUTH_PASSWORD_VALIDATORS = [
-    {
-        'NAME': 'django.contrib.auth.password_validation.UserAttributeSimilarityValidator',
-    },
-    {
-        'NAME': 'django.contrib.auth.password_validation.MinimumLengthValidator',
-    },
-    {
-        'NAME': 'django.contrib.auth.password_validation.CommonPasswordValidator',
-    },
-    {
-        'NAME': 'django.contrib.auth.password_validation.NumericPasswordValidator',
-    },
+    {'NAME': 'django.contrib.auth.password_validation.UserAttributeSimilarityValidator'},
+    {'NAME': 'django.contrib.auth.password_validation.MinimumLengthValidator'},
+    {'NAME': 'django.contrib.auth.password_validation.CommonPasswordValidator'},
+    {'NAME': 'django.contrib.auth.password_validation.NumericPasswordValidator'},
 ]
 
-
-# Internationalization
-# https://docs.djangoproject.com/en/4.2/topics/i18n/
-
+# --- INTERNATIONALIZATION ---
 LANGUAGE_CODE = 'en-us'
-
 TIME_ZONE = 'UTC'
-
 USE_I18N = True
-
 USE_TZ = True
 
-
-# Static files (CSS, JavaScript, Images)
-# https://docs.djangoproject.com/en/4.2/howto/static-files/
-
-# Static files
+# --- STATIC FILES ---
 STATIC_URL = 'static/'
 STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
-
 STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
 
-# Default primary key field type
-# https://docs.djangoproject.com/en/4.2/ref/settings/#default-auto-field
-
+# --- DEFAULT PRIMARY KEY ---
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
-# REST Framework Configuration
+# --- REST FRAMEWORK ---
 REST_FRAMEWORK = {
     'DEFAULT_PERMISSION_CLASSES': [
         'rest_framework.permissions.AllowAny',
@@ -154,32 +111,29 @@ REST_FRAMEWORK = {
     'PAGE_SIZE': 20
 }
 
-# CORS Settings
+# --- CORS HEADERS ---
+CORS_ALLOW_CREDENTIALS = True
+
 if DEBUG:
-    # Development CORS settings
+    CORS_ALLOW_ALL_ORIGINS = True
     CORS_ALLOWED_ORIGINS = [
         "http://localhost:3000",
         "http://127.0.0.1:3000",
-        "http://localhost:8080",
         "http://localhost:5173",
         "http://127.0.0.1:5173",
     ]
-    CORS_ALLOW_ALL_ORIGINS = True
 else:
-    # Production CORS settings
     CORS_ALLOW_ALL_ORIGINS = False
-    cors_origins_env = os.environ.get('CORS_ALLOWED_ORIGINS', 'https://pay-stack-dun.vercel.app/')
-    CORS_ALLOWED_ORIGINS = [origin.strip() for origin in cors_origins_env.split(',') if origin.strip()]
+    cors_origins_env = os.environ.get('CORS_ALLOWED_ORIGINS', 'https://pay-stack-dun.vercel.app')
+    CORS_ALLOWED_ORIGINS = [origin.strip().rstrip('/') for origin in cors_origins_env.split(',') if origin.strip()]
 
-CORS_ALLOW_CREDENTIALS = True
-
-# Paystack Settings
-PAYSTACK_SECRET_KEY = config('PAYSTACK_SECRET_KEY')
+# --- PAYSTACK KEYS ---
 PAYSTACK_PUBLIC_KEY = config('PAYSTACK_PUBLIC_KEY')
+PAYSTACK_SECRET_KEY = config('PAYSTACK_SECRET_KEY')
 PAYSTACK_WEBHOOK_SECRET = config('PAYSTACK_WEBHOOK_SECRET', default='')
 FRONTEND_URL = config('FRONTEND_URL', default='http://localhost:3000')
 
-# Logging Configuration
+# --- LOGGING ---
 LOGGING = {
     'version': 1,
     'disable_existing_loggers': False,
@@ -203,14 +157,10 @@ LOGGING = {
     },
 }
 
-# --- Production Security Settings ---
-import sys
-
-# Detect if running in production (DEBUG=False)
+# --- PRODUCTION SECURITY SETTINGS ---
 IS_PRODUCTION = not DEBUG
 
 if IS_PRODUCTION:
-    # Enforce HTTPS
     SECURE_SSL_REDIRECT = True
     SESSION_COOKIE_SECURE = True
     CSRF_COOKIE_SECURE = True
@@ -218,17 +168,13 @@ if IS_PRODUCTION:
     SECURE_HSTS_INCLUDE_SUBDOMAINS = True
     SECURE_HSTS_PRELOAD = True
 
-    # Disable browsable API in production
     REST_FRAMEWORK['DEFAULT_RENDERER_CLASSES'] = [
         'rest_framework.renderers.JSONRenderer',
     ]
 
-    # Log errors to stderr for Render
     LOGGING['handlers']['console']['level'] = 'ERROR'
     LOGGING['loggers']['django'] = {
         'handlers': ['console'],
         'level': 'ERROR',
         'propagate': True,
     }
-
-# --- End Production Security Settings ---
