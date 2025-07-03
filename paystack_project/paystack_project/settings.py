@@ -1,9 +1,12 @@
 from pathlib import Path
 import os
-from decouple import config
+from decouple import config, Csv
 import dj_database_url
 
 BASE_DIR = Path(__file__).resolve().parent.parent
+
+# Load environment variables from .env file
+# This will automatically load .env file if it exists
 
 # --- ENVIRONMENT DETECTION ---
 def is_production():
@@ -21,11 +24,13 @@ def is_production():
     return any(production_indicators)
 
 # --- SECURITY SETTINGS ---
-SECRET_KEY = os.environ.get('SECRET_KEY', 'django-insecure-change-this-key-for-development')
+SECRET_KEY = config('SECRET_KEY', default='django-insecure-change-this-key-for-development')
 
 # Explicit DEBUG setting - check environment first, then fall back to production detection
-DEBUG = os.environ.get('DEBUG', '').lower() in ('true', '1', 'yes', 'on')
-if not os.environ.get('DEBUG'):
+debug_env = config('DEBUG', default=None)
+if debug_env is not None:
+    DEBUG = str(debug_env).lower() in ('true', '1', 'yes', 'on')
+else:
     DEBUG = not is_production()  # Auto-detect if DEBUG not explicitly set
 
 # Dynamic ALLOWED_HOSTS based on environment
@@ -87,25 +92,16 @@ TEMPLATES = [
 WSGI_APPLICATION = 'paystack_project.wsgi.application'
 
 # --- DATABASE CONFIGURATION ---
-def get_database_config():
-    """Get database configuration based on environment"""
-    database_url = os.environ.get('DATABASE_URL', None)
-    
-    if is_production() and database_url:
-        # Production: Use PostgreSQL
-        return {
-            'default': dj_database_url.parse(database_url)
-        }
-    else:
+
         # Development: Use SQLite
-        return {
+DATABASES = {
             'default': {
                 'ENGINE': 'django.db.backends.sqlite3',
                 'NAME': BASE_DIR / 'db.sqlite3',
             }
-        }
+    }
 
-DATABASES = get_database_config()
+DATABASES["default"] = dj_database_url.parse("postgresql://paystackdb_user:mxEEe25NRYKRiDoaDKqRiYHff9ci2UwS@dpg-d1ir933ipnbc7380ctfg-a.oregon-postgres.render.com/paystackdb")
 
 # --- PASSWORD VALIDATORS ---
 AUTH_PASSWORD_VALIDATORS = [
@@ -170,10 +166,10 @@ else:
     ]
 
 # --- PAYSTACK KEYS ---
-PAYSTACK_PUBLIC_KEY = os.environ.get('PAYSTACK_PUBLIC_KEY')
-PAYSTACK_SECRET_KEY = os.environ.get('PAYSTACK_SECRET_KEY')
-PAYSTACK_WEBHOOK_SECRET = os.environ.get('PAYSTACK_WEBHOOK_SECRET', '')
-FRONTEND_URL = os.environ.get('FRONTEND_URL', default='http://localhost:3000')
+PAYSTACK_PUBLIC_KEY = config('PAYSTACK_PUBLIC_KEY', default=None)
+PAYSTACK_SECRET_KEY = config('PAYSTACK_SECRET_KEY', default=None)
+PAYSTACK_WEBHOOK_SECRET = config('PAYSTACK_WEBHOOK_SECRET', default='')
+FRONTEND_URL = config('FRONTEND_URL', default='http://localhost:3000')
 
 # --- LOGGING ---
 LOGGING = {
