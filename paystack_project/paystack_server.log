@@ -1,6 +1,6 @@
 nohup: ignoring input
 INFO Watching for file changes with StatReloader
-INFO /home/professor/Desktop/ecomerce_project/Payment-Method/paystack-integration/paystack_project/paystack_project/settings.py changed, reloading.
+Error: That port is already in use.
 ==================================================
 DJANGO SETTINGS DEBUG INFO
 ==================================================
@@ -10,7 +10,7 @@ ALLOWED_HOSTS: ['localhost', '127.0.0.1']
 CORS_ALLOW_ALL_ORIGINS: True
 SECURE_SSL_REDIRECT: False
 DATABASE: SQLite
-PAYSTACK_PUBLIC_KEY: pk_test_your_paystac...
+PAYSTACK_PUBLIC_KEY: pk_live_38a1893cef30...
 FRONTEND_URL: http://localhost:5173
 ==================================================
 🚀 Server starting in DEVELOPMENT mode
@@ -18,14 +18,3 @@ FRONTEND_URL: http://localhost:5173
 🌐 Access at: http://localhost:8000 or http://127.0.0.1:8000
 ❌ Do NOT use https://localhost:8000
 ==================================================
-Performing system checks...
-
-System check identified no issues (0 silenced).
-July 12, 2025 - 00:43:54
-Django version 5.2.1, using settings 'paystack_project.settings'
-Starting development server at http://127.0.0.1:8000/
-Quit the server with CONTROL-C.
-
-WARNING: This is a development server. Do not use it in a production setting. Use a production WSGI or ASGI server instead.
-For more information on production servers see: https://docs.djangoproject.com/en/5.2/howto/deployment/
-INFO Watching for file changes with StatReloader

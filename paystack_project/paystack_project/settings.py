@@ -173,6 +173,7 @@ CORS_ALLOWED_ORIGINS = [
     "http://localhost:8080",
     "http://127.0.0.1:8080",
     "https://pay-stack-dun.vercel.app",
+    "https://paystack-integration-ldwp.onrender.com",
     "https://your-ecommerce-domain.com",  # Replace with your actual domain
 ]
 
