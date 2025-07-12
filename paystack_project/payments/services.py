@@ -16,6 +16,11 @@ class PaystackService:
         self.secret_key = settings.PAYSTACK_SECRET_KEY
         self.public_key = settings.PAYSTACK_PUBLIC_KEY
         self.webhook_secret = settings.PAYSTACK_WEBHOOK_SECRET
+        # Check if we're in test mode (when keys are placeholder values)
+        self.test_mode = (
+            self.secret_key == 'sk_test_your_paystack_secret_key_here' or
+            self.public_key == 'pk_test_your_paystack_public_key_here'
+        )
     
     def _get_headers(self) -> Dict[str, str]:
         return {
@@ -47,6 +52,20 @@ class PaystackService:
     
     def initialize_payment(self, payment_data: Dict[str, Any]) -> Dict[str, Any]:
         """Initialize payment with Paystack"""
+        
+        # If in test mode, return mock response
+        if self.test_mode:
+            logger.info(f"TEST MODE: Initializing payment for reference: {payment_data['reference']}")
+            return {
+                'status': True,
+                'message': 'Payment initialized successfully (TEST MODE)',
+                'data': {
+                    'authorization_url': f"http://localhost:5176/payment/success?reference={payment_data['reference']}",
+                    'access_code': f"TEST_ACCESS_{payment_data['reference']}",
+                    'reference': payment_data['reference']
+                }
+            }
+        
         endpoint = '/transaction/initialize'
         
         # Prepare payload
@@ -87,6 +106,37 @@ class PaystackService:
     
     def verify_payment(self, reference: str) -> Dict[str, Any]:
         """Verify payment with Paystack"""
+        
+        # If in test mode, return mock response
+        if self.test_mode:
+            logger.info(f"TEST MODE: Verifying payment for reference: {reference}")
+            return {
+                'status': True,
+                'message': 'Payment verified successfully (TEST MODE)',
+                'data': {
+                    'reference': reference,
+                    'status': 'success',
+                    'amount': 100000,  # 1000 NGN in kobo
+                    'currency': 'NGN',
+                    'channel': 'test',
+                    'gateway_response': 'Successful (TEST MODE)',
+                    'customer': {
+                        'email': 'test@example.com',
+                        'customer_code': 'TEST_CUSTOMER_001'
+                    },
+                    'authorization': {
+                        'authorization_code': f'TEST_AUTH_{reference}',
+                        'card_type': 'test',
+                        'last4': '0000',
+                        'exp_month': '12',
+                        'exp_year': '2025',
+                        'bank': 'TEST BANK',
+                        'country_code': 'NG',
+                        'brand': 'test'
+                    }
+                }
+            }
+        
         endpoint = f'/transaction/verify/{reference}'
         logger.info(f"Verifying payment for reference: {reference}")
         return self._make_request('GET', endpoint)

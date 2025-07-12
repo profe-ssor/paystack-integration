@@ -30,3 +30,9 @@ INFO 2025-07-03 09:05:17,218 services 12621 128237465228992 Initializing payment
 INFO 2025-07-03 09:25:33,804 services 17690 129080479442624 Initializing payment for reference: PAY_F815A359A2A4
 INFO 2025-07-09 07:14:55,551 services 8584 134367775024832 Initializing payment for reference: PAY_48BCECDFF5B2
 INFO 2025-07-11 19:26:29,452 services 21088 130312377980608 Initializing payment for reference: PAY_EB011DF1F3B6
+INFO 2025-07-12 00:36:10,286 services 26308 123494228551360 Initializing payment for reference: PAY_777B78A19D56
+ERROR 2025-07-12 00:36:10,700 services 26308 123494228551360 Paystack API request failed: 401 Client Error: Unauthorized for url: https://api.paystack.co/transaction/initialize
+ERROR 2025-07-12 00:36:10,701 views 26308 123494228551360 Payment initialization error: Payment service error: 401 Client Error: Unauthorized for url: https://api.paystack.co/transaction/initialize
+INFO 2025-07-12 00:37:47,400 services 26903 125660408309440 TEST MODE: Initializing payment for reference: PAY_5EF3C706D183
+INFO 2025-07-12 00:38:02,800 services 26903 125660408309440 TEST MODE: Verifying payment for reference: PAY_5EF3C706D183
+INFO 2025-07-12 00:41:02,383 services 26903 125660399916736 TEST MODE: Initializing payment for reference: PAY_4B5F87E3B7DA
