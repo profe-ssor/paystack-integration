@@ -28,3 +28,5 @@ INFO 2025-07-03 03:59:44,222 services 7587 133301143594688 Initializing payment 
 INFO 2025-07-03 09:03:02,772 services 12621 128237473621696 Initializing payment for reference: PAY_7255C259D60F
 INFO 2025-07-03 09:05:17,218 services 12621 128237465228992 Initializing payment for reference: PAY_13855B8B62BD
 INFO 2025-07-03 09:25:33,804 services 17690 129080479442624 Initializing payment for reference: PAY_F815A359A2A4
+INFO 2025-07-09 07:14:55,551 services 8584 134367775024832 Initializing payment for reference: PAY_48BCECDFF5B2
+INFO 2025-07-11 19:26:29,452 services 21088 130312377980608 Initializing payment for reference: PAY_EB011DF1F3B6

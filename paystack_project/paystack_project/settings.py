@@ -49,12 +49,12 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-
+    
     # Third-party
     'rest_framework',
     'corsheaders',
     'django_filters',
-
+    
     # Local
     'payments',
 ]
@@ -95,11 +95,11 @@ WSGI_APPLICATION = 'paystack_project.wsgi.application'
 
         # Development: Use SQLite
 DATABASES = {
-            'default': {
-                'ENGINE': 'django.db.backends.sqlite3',
-                'NAME': BASE_DIR / 'db.sqlite3',
-            }
+    'default': {
+        'ENGINE': 'django.db.backends.sqlite3',
+        'NAME': BASE_DIR / 'db.sqlite3',
     }
+}
 
 DATABASES["default"] = dj_database_url.parse("postgresql://paystackdb_user:mxEEe25NRYKRiDoaDKqRiYHff9ci2UwS@dpg-d1ir933ipnbc7380ctfg-a.oregon-postgres.render.com/paystackdb")
 
@@ -149,21 +149,36 @@ REST_FRAMEWORK = {
 CORS_ALLOW_CREDENTIALS = True
 
 if is_production():
-    # Production: Strict CORS
-    CORS_ALLOW_ALL_ORIGINS = False
+    # Production: Allow all origins for now (you can make this stricter later)
+    CORS_ALLOW_ALL_ORIGINS = True
+    # Fallback to specific origins if needed
     cors_origins_env = os.environ.get('CORS_ALLOWED_ORIGINS', 'https://pay-stack-dun.vercel.app')
     CORS_ALLOWED_ORIGINS = [origin.strip().rstrip('/') for origin in cors_origins_env.split(',') if origin.strip()]
 else:
     # Development: Relaxed CORS
     CORS_ALLOW_ALL_ORIGINS = True
-    CORS_ALLOWED_ORIGINS = [
-        "http://localhost:3000",
-        "http://127.0.0.1:3000",
-        "http://localhost:5173",
-        "http://127.0.0.1:5173",
-        "http://localhost:8080",
-        "http://127.0.0.1:8080",
-    ]
+
+# Additional CORS settings for better compatibility
+CORS_ALLOWED_ORIGINS = [
+    "http://localhost:3000",
+    "http://127.0.0.1:3000",
+    "http://localhost:5173",
+    "http://127.0.0.1:5173",
+    "http://localhost:5174",
+    "http://127.0.0.1:5174",
+    "http://localhost:5175",
+    "http://127.0.0.1:5175",
+    "http://localhost:5176",
+    "http://127.0.0.1:5176",
+    "http://localhost:8080",
+    "http://127.0.0.1:8080",
+    "https://pay-stack-dun.vercel.app",
+    "https://your-ecommerce-domain.com",  # Replace with your actual domain
+]
+
+# Allow all headers and methods
+CORS_ALLOW_ALL_HEADERS = True
+CORS_ALLOW_ALL_METHODS = True
 
 # --- PAYSTACK KEYS ---
 PAYSTACK_PUBLIC_KEY = config('PAYSTACK_PUBLIC_KEY', default=None)
@@ -208,7 +223,7 @@ LOGGING = {
             'handlers': ['console'],
             'level': 'INFO',
             'propagate': True,
-        },
+    },
     },
 }
 
