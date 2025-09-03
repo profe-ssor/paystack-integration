@@ -12,7 +12,7 @@ from django.core.exceptions import ObjectDoesNotExist
 from rest_framework import generics, status
 from rest_framework.response import Response
 from rest_framework.decorators import api_view, permission_classes
-from rest_framework.permissions import AllowAny
+from rest_framework.permissions import AllowAny, IsAuthenticated
 from .models import Transaction, WebhookEvent, PaymentConfiguration
 from .serializers import (
     TransactionSerializer, 
@@ -38,7 +38,7 @@ def index(request):
 
 class InitializePaymentView(generics.CreateAPIView):
     """Initialize payment with Paystack"""
-    permission_classes = [AllowAny]
+    permission_classes = [AllowAny]  # Keep public for now
     serializer_class = PaymentInitializationSerializer
     
     def create(self, request, *args, **kwargs):
@@ -52,6 +52,7 @@ class InitializePaymentView(generics.CreateAPIView):
         try:
             # Create transaction record
             transaction = Transaction.objects.create(
+                user=request.user,
                 reference=reference,
                 email=data['email'],
                 amount=data['amount'],
@@ -285,12 +286,12 @@ class WebhookView(generics.CreateAPIView):
 
 class TransactionListView(generics.ListAPIView):
     """List all transactions with filtering"""
-    permission_classes = [AllowAny]
+    permission_classes = [AllowAny]  # Temporarily allow any for testing
     serializer_class = TransactionSerializer
-    queryset = Transaction.objects.all()
     
     def get_queryset(self):
-        queryset = super().get_queryset()
+        # Show all transactions for now (will be filtered by user when auth is working)
+        queryset = Transaction.objects.all()
         
         # Filter by status
         status_filter = self.request.query_params.get('status')
@@ -331,10 +332,13 @@ class TransactionListView(generics.ListAPIView):
 
 class TransactionDetailView(generics.RetrieveAPIView):
     """Get transaction details"""
-    permission_classes = [AllowAny]
+    permission_classes = [AllowAny]  # Temporarily allow any for testing
     serializer_class = TransactionSerializer
-    queryset = Transaction.objects.all()
     lookup_field = 'reference'
+    
+    def get_queryset(self):
+        # Allow access to all transactions for now
+        return Transaction.objects.all()
     
     def retrieve(self, request, *args, **kwargs):
         try:

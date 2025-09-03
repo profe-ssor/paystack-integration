@@ -1,6 +1,7 @@
 # payments/urls.py
 from django.urls import path
 from . import views
+from . import auth_views
 
 urlpatterns = [
     # Index endpoint
@@ -24,6 +25,13 @@ urlpatterns = [
     
     # Dashboard
     path('dashboard/stats/', views.dashboard_stats, name='dashboard_stats'),
+    
+    # Authentication endpoints
+    path('auth/register/', auth_views.UserRegistrationView.as_view(), name='user_register'),
+    path('auth/login/', auth_views.UserLoginView.as_view(), name='user_login'),
+    path('auth/profile/', auth_views.UserProfileView.as_view(), name='user_profile'),
+    path('auth/logout/', auth_views.logout, name='user_logout'),
+    path('auth/refresh/', auth_views.refresh_token, name='refresh_token'),
 ]
 
 
